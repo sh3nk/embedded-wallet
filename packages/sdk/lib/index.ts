@@ -37,6 +37,12 @@ class EmbeddedWallet {
     [SapphireTestnet]: 'https://explorer.oasis.io/testnet/sapphire',
   } as { [networkId: number]: string };
 
+  /**
+   * @TODO Use this to trigger correct methods after user signs tx
+   */
+  isSubstrate = false;
+  substrateNetwork = 'rococo';
+
   lastAccount = {
     username: '',
     authStrategy: 'passkey' as AuthStrategyName,
