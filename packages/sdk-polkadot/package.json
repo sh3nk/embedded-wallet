@@ -1,0 +1,20 @@
+{
+  "name": "@apillon/wallet-sdk-polkadot",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@apillon/wallet-eslint-config": "*",
+    "typescript": "^5.5.3",
+    "vite": "^5.4.1"
+  },
+  "dependencies": {
+    "@polkadot/api": "^12.4.2",
+    "@polkadot/api-contract": "^12.4.2"
+  }
+}
