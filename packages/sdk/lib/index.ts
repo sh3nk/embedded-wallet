@@ -81,7 +81,7 @@ class EmbeddedWallet {
 
     this.events = mitt<Events>();
     this.apillonClientId = params?.clientId || '';
-    this.passkeyIframe = new PasskeyIframe();
+    this.passkeyIframe = new PasskeyIframe(this.events);
 
     /**
      * Provider connection events
@@ -119,7 +119,7 @@ class EmbeddedWallet {
    * Create new "wallet" for username.
    * Creates a new contract for each account on sapphire network.
    */
-  async register(strategy: AuthStrategyName, authData: AuthData) {
+  async register(strategy: AuthStrategyName, authData: AuthData, registerData?: RegisterData) {
     if (!this.sapphireProvider) {
       abort('SAPPHIRE_PROVIDER_NOT_INITIALIZED');
     }
@@ -128,15 +128,17 @@ class EmbeddedWallet {
       abort('ACCOUNT_MANAGER_CONTRACT_NOT_INITIALIZED');
     }
 
-    let registerData = undefined as RegisterData | undefined;
-
     /**
      * Authentication method
      */
-    if (strategy === 'password') {
-      registerData = await new PasswordStrategy().getRegisterData(authData);
-    } else if (strategy === 'passkey') {
-      registerData = await new PasskeyStrategy().getRegisterData(authData);
+    if (!registerData) {
+      if (strategy === 'password') {
+        registerData = await new PasswordStrategy().getRegisterData(authData);
+      } else if (strategy === 'passkey') {
+        registerData = await new PasskeyStrategy().getRegisterData(authData);
+      }
+    } else if (!registerData.optionalPassword) {
+      registerData.optionalPassword = ethers.ZeroHash;
     }
 
     const gaslessData = this.abiCoder.encode(
@@ -423,6 +425,13 @@ class EmbeddedWallet {
       this.waitForAccountResolver = resolve;
       this.events.emit('providerRequestAccounts', resolve);
     });
+  }
+
+  /**
+   * Use username to generate hashedUsername and send it to passkey iframe
+   */
+  async sendIframePasskeyData(authData: AuthData) {
+    return PasskeyStrategy.sendIframeRegisterData(authData);
   }
   // #endregion
 

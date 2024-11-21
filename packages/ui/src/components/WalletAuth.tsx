@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { getEmbeddedWallet, AuthStrategyName } from '@apillon/wallet-sdk';
+import { AuthStrategyName, Events, RegisterData } from '@apillon/wallet-sdk';
 import { useWalletContext } from '../contexts/wallet.context';
 import Btn from './Btn';
 import { AppProps } from './WalletWidget';
@@ -12,7 +12,7 @@ import clsx from 'clsx';
 export default function WalletAuth({
   authFormPlaceholder = 'your e-mail',
 }: Pick<AppProps, 'authFormPlaceholder'>) {
-  const { dispatch, defaultNetworkId, handleError } = useWalletContext();
+  const { wallet, dispatch, defaultNetworkId, handleError } = useWalletContext();
 
   const [username, setUsername] = useState('');
   const [loading, setLoading] = useState(false);
@@ -21,14 +21,34 @@ export default function WalletAuth({
   const [isConfiguringPasskey, setIsConfiguringPasskey] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(false);
 
+  useEffect(() => {
+    const onUsernameRequested = (_params: Events['iframeUsernameRequested']) => {
+      wallet?.sendIframePasskeyData({ username });
+    };
+
+    const onPKCreateResponse = (params: Events['iframePKCreateResponse']) => {
+      startRegister(params);
+    };
+
+    if (wallet) {
+      wallet.events.on('iframeUsernameRequested', onUsernameRequested);
+      wallet.events.on('iframePKCreateResponse', onPKCreateResponse);
+    }
+
+    return () => {
+      if (wallet) {
+        wallet.events.off('iframeUsernameRequested', onUsernameRequested);
+        wallet.events.off('iframePKCreateResponse', onPKCreateResponse);
+      }
+    };
+  }, [wallet, username]);
+
   async function onAuth(ev: React.FormEvent<HTMLFormElement>) {
     ev.preventDefault();
 
     if (!username) {
       return;
     }
-
-    const wallet = getEmbeddedWallet();
 
     setLoading(true);
     handleError();
@@ -85,15 +105,23 @@ export default function WalletAuth({
     }
   }
 
-  async function startRegister() {
+  async function startRegister(registerData: RegisterData) {
+    if (!isConfiguringPasskey) {
+      setIsConfiguringPasskey(true);
+      await new Promise(resolve => setTimeout(resolve, 150));
+      await wallet?.passkeyIframe.registerInit('.ew-pk-retry', 'Retry', 'ghost');
+      await new Promise(resolve => setTimeout(resolve, 150));
+      wallet?.passkeyIframe.registerSetLoading(true, true);
+    } else {
+      wallet?.passkeyIframe.registerSetLoading(true, true);
+    }
+
     setLoading(true);
 
     handleError();
 
     try {
-      const wallet = getEmbeddedWallet();
-
-      const res = await wallet?.register('passkey', { username });
+      const res = await wallet?.register('passkey', { username }, registerData);
 
       if (res) {
         setupUserInfo({ username, address: res.publicAddress, authStrategy: 'passkey' });
@@ -103,6 +131,7 @@ export default function WalletAuth({
     }
 
     setLoading(false);
+    wallet?.passkeyIframe.registerSetLoading(false, true);
   }
 
   async function setupUserInfo({
@@ -114,8 +143,6 @@ export default function WalletAuth({
     address: string;
     authStrategy: AuthStrategyName;
   }) {
-    const wallet = getEmbeddedWallet();
-
     const balance = (await wallet?.getAccountBalance(address)) || '0';
 
     dispatch({
@@ -134,7 +161,7 @@ export default function WalletAuth({
     return (
       <div className="text-center mt-2">
         <div className={clsx(['text-center mb-4', { invisible: !loading }])}>
-          <Spinner size={56} />
+          <Spinner size={56} className="mx-auto" />
         </div>
 
         <h2 className="mb-2">Configuring passkey</h2>
@@ -143,9 +170,7 @@ export default function WalletAuth({
           Please complete the passkey configuration with your browser.
         </p>
 
-        <Btn variant="ghost" disabled={loading} className="w-full" onClick={() => startRegister()}>
-          Retry
-        </Btn>
+        <div className="ew-pk-retry"></div>
 
         <WalletError show className="mt-6" />
       </div>
@@ -156,12 +181,14 @@ export default function WalletAuth({
     return (
       <div className="text-center mt-2">
         <div className="text-center">
-          <IconCheckmark />
+          <IconCheckmark className="mx-auto" />
         </div>
 
         <h2 className="mb-2">Email succesfully confirmed</h2>
 
-        <p className="text-sm text-lightgrey mb-6">Passkey configuration will now start.</p>
+        <p className="text-sm text-lightgrey mb-6">Passkey configuration can now start.</p>
+
+        <div className="ew-pk-create"></div>
       </div>
     );
   }
@@ -199,9 +226,8 @@ export default function WalletAuth({
               }
 
               setIsCodeSubmitted(true);
-              setTimeout(() => setIsConfiguringPasskey(true), 1000);
-
-              startRegister();
+              await new Promise(resolve => setTimeout(resolve, 1000));
+              wallet?.passkeyIframe.registerInit('.ew-pk-create');
             } catch (e) {
               handleError(e, 'confirmEmail');
 
@@ -341,7 +367,7 @@ function ConfirmEmail({
   return (
     <div className="text-center">
       <div className="text-center mb-4">
-        <IconBird />
+        <IconBird className="mx-auto" />
       </div>
 
       <h2 className="mb-2">Check your email</h2>

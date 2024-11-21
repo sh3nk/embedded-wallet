@@ -59,7 +59,7 @@ export type RegisterData = {
     x: bigint | number;
     y: bigint | number;
   };
-  optionalPassword: string;
+  optionalPassword?: string;
 };
 
 export interface AuthStrategy {
@@ -178,4 +178,10 @@ export type Events = {
    * Provider event
    */
   accountsChanged: string[];
+
+  /**
+   * Iframe events
+   */
+  iframeUsernameRequested: void;
+  iframePKCreateResponse: RegisterData;
 };

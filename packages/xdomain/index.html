@@ -4,6 +4,127 @@
     <title>EW Passkey Interface</title>
   </head>
   <body>
+    <style>
+      body {
+        margin: 2px 0;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .btn-core {
+        position: relative;
+        display: block;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        font-weight: 700;
+        border-width: 4px 0;
+        border-style: solid;
+        width: 100%;
+        height: 48px;
+      }
+
+      .btn-primary {
+        background: #F9FF73;
+        color: #141721;
+        border-bottom-color: #F9FF73;
+        border-top-color: #F9FF73;
+      }
+
+      .btn-secondary {
+        background: #1E212B;
+        color: #F0F2DA;
+        border-bottom-color: #1E212B;
+        border-top-color: #1E212B;
+      }
+
+      .btn-ghost {
+        background: transparent;
+        color: #F9FF73;
+        border-bottom-color: transparent;
+        border-top-color: transparent;
+        box-shadow: 0 0 0 1px #313442;
+      }
+
+      .btn-hover-1,
+      .btn-hover-ghost {
+        transition-property: all;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 150ms;
+        cursor: pointer;
+      }
+
+      .btn-hover-1:hover {
+        transform: translateY(-2px);
+        border-bottom-color: rgba(120, 221, 232, 0.5);
+      }
+
+      .btn-hover-1:focus {
+        transform: translateY(1px);
+        border-bottom-color: rgba(248, 255, 115, 0.5);
+      }
+
+      .btn-hover-ghost:hover {
+        transform: translateY(-2px);
+        border-bottom-color: #313442;
+      }
+
+      .btn-hover-ghost:focus {
+        transform: translateY(1px);
+      }
+
+      .btn-disabled {
+        opacity: 0.6;
+        /* filter: grayscale(100%); */
+      }
+
+      .spinner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin: -18px 0 0 -18px;
+      }
+
+      .btn-ghost .spinner > svg > circle {
+        stroke: #F9FF73;
+      }
+
+      @keyframes rotate {
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes dash {
+        0% {
+          stroke-dashoffset: 0;
+        }
+        50% {
+          stroke-dashoffset: -35;
+        }
+        100% {
+          stroke-dashoffset: -124;
+        }
+      }
+    </style>
+
+    <button
+      id="ew-pk-btn"
+      class="btn-core"
+      style="visibility: hidden;"
+    >
+      <span class="spinner hidden">
+        <svg style="width: 36px; height: 36px; animation: rotate 2s linear infinite; z-index: 2;"
+          viewBox="0 0 50 50">
+          <circle cx="25" cy="25" r="20" fill="none" stroke="#141721" strokeWidth="2" style="stroke-dasharray: 8, 10;
+            animation: dash 8s ease-in-out infinite;"></circle>
+        </svg>
+      </span>
+
+      <span></span>
+    </button>
+
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
