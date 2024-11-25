@@ -15,7 +15,7 @@ export default defineConfig({
       include: ['lib'],
       rollupTypes: true,
     }),
-    mkcert(),
+    // mkcert(),
   ],
 
   build: {

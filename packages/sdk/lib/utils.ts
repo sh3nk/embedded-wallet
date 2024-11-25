@@ -61,10 +61,10 @@ export function abort(e: keyof typeof Errors, message = 'Error') {
   throw err;
 }
 
-export function getPasskeyIframe() {
-  const oaw = getEmbeddedWallet();
-  return oaw?.passkeyIframe;
-}
+// export function getPasskeyIframe() {
+//   const oaw = getEmbeddedWallet();
+//   return oaw?.passkeyIframe;
+// }
 
 /**
  * Extended ethers JsonRpcProvider that accepts multiple rpc urls as backup

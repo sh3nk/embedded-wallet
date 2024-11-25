@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 import { AuthData, AuthStrategy, WebauthnContract } from '../types';
-import { abort, getHashedUsername, getPasskeyIframe } from '../utils';
+import { abort, getHashedUsername } from '../utils';
+import { credentialCreate, credentialGet } from '../browser-webauthn';
 
 class PasskeyStrategy implements AuthStrategy {
   async getRegisterData(authData: AuthData, hashedUsername?: Buffer) {
@@ -18,17 +19,23 @@ class PasskeyStrategy implements AuthStrategy {
       return;
     }
 
-    const cred = await getPasskeyIframe()?.create(hashedUsername, authData.username);
-
-    if (!cred) {
-      abort('IFRAME_NOT_INIT');
-      return;
-    }
+    const cred = await credentialCreate(
+      {
+        name: 'Embedded Wallet Account',
+        id: 'app-dev.apillon.io',
+      },
+      {
+        id: hashedUsername,
+        name: authData.username,
+        displayName: authData.username,
+      },
+      crypto.getRandomValues(new Uint8Array(32))
+    );
 
     return {
       hashedUsername,
-      credentialId: cred.credentialId,
-      pubkey: cred.pubkey,
+      credentialId: cred.id,
+      pubkey: cred.ad.attestedCredentialData!.credentialPublicKey!,
       optionalPassword: ethers.ZeroHash,
     };
   }
@@ -52,18 +59,25 @@ class PasskeyStrategy implements AuthStrategy {
     /**
      * Request passkey from user
      */
-    const res = await getPasskeyIframe()?.get(
+    // const res = await getPasskeyIframe()?.get(
+    //   credentialIds.map((c: any) => ethers.toBeArray(c)),
+    //   ethers.toBeArray(ethers.sha256(personalization + ethers.sha256(data).slice(2)))
+    // );
+
+    // if (!res) {
+    //   abort('IFRAME_NOT_INIT');
+    //   return;
+    // }
+
+    const cred = await credentialGet(
+      // binary credential ids
       credentialIds.map((c: any) => ethers.toBeArray(c)),
+      // challenge
       ethers.toBeArray(ethers.sha256(personalization + ethers.sha256(data).slice(2)))
     );
 
-    if (!res) {
-      abort('IFRAME_NOT_INIT');
-      return;
-    }
-
     // @ts-expect-error Types from abi are not correct
-    return await WAC.proxyView(res.credentials.credentialIdHashed, res.credentials.resp, data);
+    return await WAC.proxyView(cred.credentialIdHashed, cred.resp, data);
   }
 }
 
