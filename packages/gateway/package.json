@@ -10,13 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@apillon/wallet-sdk": "3.0.1"
+    "@apillon/wallet-sdk": "3.0.1",
+    "@headlessui/react": "^2.2.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@apillon/wallet-eslint-config": "*",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
     "globals": "^15.15.0"
-  },
-  "global": {
-    "dependencies": ["@headlessui/react", "react", "react-dom"]
   }
 }

@@ -6,4 +6,5 @@ EmbeddedWalletUI('#wallet', {
   defaultNetworkId: 1287,
   networks: DefaultEthereumNetworks,
   networksSubstrate: DefaultSubstrateNetworks,
+  broadcastAfterSign: true,
 });

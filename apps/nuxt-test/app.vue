@@ -13,6 +13,8 @@ const { info } = useAccount();
       :defaultNetworkId="1287"
       :networks="DefaultEthereumNetworks"
       :networksSubstrate="DefaultSubstrateNetworks"
+      passkeyAuthMode="popup"
+      broadcastAfterSign
     />
 
     <div

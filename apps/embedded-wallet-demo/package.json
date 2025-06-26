@@ -13,16 +13,14 @@
   "dependencies": {
     "@apillon/wallet-sdk": "*",
     "@apillon/wallet-ui": "*",
+    "@headlessui/react": "^2.2.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "sonner": "^1.7.4"
   },
   "devDependencies": {
-    "@apillon/wallet-eslint-config": "*"
-  },
-  "global": {
-    "dependencies": [
-      "@headlessui/react",
-      "react",
-      "react-dom"
-    ]
+    "@apillon/wallet-eslint-config": "*",
+    "@types/react": "^18",
+    "@types/react-dom": "^18"
   }
 }

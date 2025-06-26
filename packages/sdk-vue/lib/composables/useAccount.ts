@@ -36,12 +36,14 @@ export function useAccount() {
     if (name === 'username') {
       info.username = newValue;
     } else if (name === 'walletIndex') {
-      info.activeWallet = wallet.value?.getCurrentWallet();
+      // info.activeWallet = wallet.value?.getCurrentWallet();
     } else if ((name === 'walletsSS' || name === 'walletsEVM') && newValue.length) {
-      info.activeWallet = wallet.value?.getCurrentWallet();
+      // info.activeWallet = wallet.value?.getCurrentWallet();
     } else if (name === 'authStrategy') {
       info.authStrategy = newValue;
     }
+
+    info.activeWallet = wallet.value?.getCurrentWallet();
   }
 
   async function getBalance(networkId?: string | number) {

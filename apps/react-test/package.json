@@ -10,12 +10,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@apillon/wallet-react": "*"
+    "@apillon/wallet-react": "*",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
   },
   "devDependencies": {
-    "@apillon/wallet-eslint-config": "*"
+    "@apillon/wallet-eslint-config": "*",
+    "@types/react": "^19",
+    "@types/react-dom": "^19"
   },
   "global": {
-    "dependencies": ["ethers6", "ethers5", "react", "react-dom", "viem"]
+    "dependencies": ["ethers6", "ethers5", "viem"]
   }
 }

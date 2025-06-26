@@ -16,8 +16,8 @@ export function useWallet() {
   });
 
   function checkForWindowWallet() {
-    if (typeof window !== 'undefined' && window[WindowId]) {
-      wallet.value = window[WindowId];
+    if (typeof window !== 'undefined' && (window as any)[WindowId]) {
+      wallet.value = (window as any)[WindowId];
       return;
     }
     setTimeout(checkForWindowWallet, 50);

@@ -34,20 +34,16 @@
   },
   "dependencies": {
     "@apillon/wallet-sdk": "3.0.1",
+    "@headlessui/react": "^2.2.3",
     "dayjs": "^1.11.13",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-qr-code": "^2.0.15"
   },
   "devDependencies": {
     "@apillon/wallet-eslint-config": "*",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
     "vite-plugin-lib-inject-css": "^2.2.1"
-  },
-  "global": {
-    "dependencies": [
-      "@headlessui/react",
-      "react",
-      "react-dom"
-    ]
   }
 }
