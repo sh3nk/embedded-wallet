@@ -19,8 +19,8 @@ export function useWallet() {
    * Keep checking if not available
    */
   function checkForWindowWallet() {
-    if (typeof window !== 'undefined' && window[WindowId]) {
-      setWallet(window[WindowId]);
+    if (typeof window !== 'undefined' && (window as any)[WindowId]) {
+      setWallet((window as any)[WindowId]);
       return;
     }
     setTimeout(checkForWindowWallet, 50);

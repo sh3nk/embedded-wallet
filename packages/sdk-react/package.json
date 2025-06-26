@@ -32,12 +32,13 @@
   },
   "dependencies": {
     "@apillon/wallet-sdk": "3.0.1",
-    "@apillon/wallet-ui": "3.0.1"
+    "@apillon/wallet-ui": "3.0.1",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
   },
   "devDependencies": {
-    "@apillon/wallet-eslint-config": "*"
-  },
-  "global": {
-    "dependencies": ["react", "react-dom"]
+    "@apillon/wallet-eslint-config": "*",
+    "@types/react": "^19",
+    "@types/react-dom": "^19"
   }
 }

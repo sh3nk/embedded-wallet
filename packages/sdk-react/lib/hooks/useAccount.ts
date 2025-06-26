@@ -23,12 +23,14 @@ export function useAccount() {
       if (name === 'username') {
         setInfo(i => ({ ...i, username: newValue }));
       } else if (name === 'walletIndex') {
-        setInfo(i => ({ ...i, activeWallet: wallet.getCurrentWallet() }));
+        // setInfo(i => ({ ...i, activeWallet: wallet.getCurrentWallet() }));
       } else if ((name === 'walletsSS' || name === 'walletsEVM') && newValue.length) {
-        setInfo(i => ({ ...i, activeWallet: wallet.getCurrentWallet() }));
+        // setInfo(i => ({ ...i, activeWallet: wallet.getCurrentWallet() }));
       } else if (name === 'authStrategy') {
         setInfo(i => ({ ...i, authStrategy: newValue }));
       }
+
+      setInfo(i => ({ ...i, activeWallet: wallet.getCurrentWallet() }));
     };
 
     if (wallet) {
